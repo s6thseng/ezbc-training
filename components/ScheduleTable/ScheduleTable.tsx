@@ -1,9 +1,13 @@
-import type { PlayerAvailability, Session } from "@/types/database";
+"use client";
+
+import type { Player, PlayerAvailability, Session } from "@/types/database";
 import styles from "./ScheduleTable.module.css";
 
 type ScheduleTableProps = {
   sessions: Session[];
   availability: PlayerAvailability[];
+  currentPlayer: Player | null;
+  onToggleSession: (sessionId: string, checked: boolean) => void;
 };
 
 function formatDate(date: string) {
@@ -21,13 +25,33 @@ function formatTime(time: string) {
 export function ScheduleTable({
   sessions,
   availability,
+  currentPlayer,
+  onToggleSession,
 }: ScheduleTableProps) {
   if (sessions.length === 0) {
     return <p className={styles.empty}>No sessions planned for this week.</p>;
   }
 
+  const rows = [...availability];
+
+  if (
+    currentPlayer &&
+    !rows.some((entry) => entry.player.id === currentPlayer.id)
+  ) {
+    rows.unshift({
+      player: currentPlayer,
+      sessionIds: [],
+    });
+  }
+
+  const visibleRows = rows.filter(
+    (entry) =>
+      entry.sessionIds.length > 0 ||
+      (currentPlayer && entry.player.id === currentPlayer.id)
+  );
+
   const totals = sessions.map((session) =>
-    availability.filter((entry) => entry.sessionIds.includes(session.id)).length
+    visibleRows.filter((entry) => entry.sessionIds.includes(session.id)).length
   );
 
   return (
@@ -35,7 +59,7 @@ export function ScheduleTable({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.nameCol}>Name</th>
+            <th className={styles.nameCol}></th>
             {sessions.map((session) => (
               <th key={session.id}>
                 <div className={styles.date}>{formatDate(session.date)}</div>
@@ -54,19 +78,49 @@ export function ScheduleTable({
         </thead>
 
         <tbody>
-          {availability.map((entry) => (
-            <tr key={entry.player.id}>
-              <td className={styles.nameCol}>{entry.player.name}</td>
-              {sessions.map((session) => (
-                <td key={session.id} className={styles.checkCell}>
-                  {entry.sessionIds.includes(session.id) ? "✓" : ""}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {visibleRows.map((entry) => {
+            const isCurrentPlayer =
+              currentPlayer && entry.player.id === currentPlayer.id;
 
-          <tr>
-            <td className={styles.nameCol}>Total</td>
+            return (
+              <tr
+                  key={entry.player.id}
+                  className={isCurrentPlayer ? styles.currentPlayerRow : ""}
+                >
+                <td className={styles.nameCol}>{entry.player.name}</td>
+
+                {sessions.map((session) => {
+                  const checked = entry.sessionIds.includes(session.id);
+
+                  return (
+                    <td key={session.id} className={styles.checkCell}>
+                      {isCurrentPlayer ? (
+                      <input
+                        className={styles.checkbox}
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(event) =>
+                          onToggleSession(session.id, event.target.checked)
+                        }
+                      />
+                    ) : (
+                      <span
+                        className={
+                          checked ? styles.available : styles.unavailable
+                        }
+                      >
+                        {checked ? "✓" : "–"}
+                      </span>
+                    )}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+
+      <tr className={styles.totalRow}>
+        <td className={styles.nameCol}>Total</td>
             {totals.map((total, index) => (
               <td key={sessions[index].id} className={styles.totalCell}>
                 {total}

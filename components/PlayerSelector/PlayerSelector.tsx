@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { findOrCreatePlayer } from "@/app/actions/player";
 import type { Player } from "@/types/database";
 import styles from "./PlayerSelector.module.css";
@@ -12,25 +12,46 @@ type PlayerSelectorProps = {
 export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
   const [name, setName] = useState("");
   const [player, setPlayer] = useState<Player | null>(null);
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
-    "idle"
-  );
+  const [status, setStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+
+  const firstRender = useRef(true);
 
   useEffect(() => {
     const savedName = localStorage.getItem("ezbc-player-name");
 
     if (savedName) {
       setName(savedName);
-      void loadPlayer(savedName);
     }
   }, []);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    const cleaned = name.trim();
+
+    if (!cleaned) {
+      setPlayer(null);
+      onPlayerChange?.(null);
+      setStatus("idle");
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      void loadPlayer(cleaned);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [name]);
 
   async function loadPlayer(inputName: string) {
     const cleanedName = inputName.trim();
 
     if (!cleanedName) {
-      setPlayer(null);
-      onPlayerChange?.(null);
       return;
     }
 
@@ -41,10 +62,13 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
 
       setPlayer(loadedPlayer);
       localStorage.setItem("ezbc-player-name", loadedPlayer.name);
+
       onPlayerChange?.(loadedPlayer);
+
       setStatus("saved");
     } catch (error) {
       console.error(error);
+
       setStatus("error");
       setPlayer(null);
       onPlayerChange?.(null);
@@ -72,17 +96,24 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
             setName(event.target.value);
             setStatus("idle");
           }}
-          onBlur={() => void loadPlayer(name)}
           onKeyDown={handleKeyDown}
           placeholder="Enter your name"
         />
 
-        {status === "saving" && <span className={styles.status}>Saving...</span>}
-        {status === "saved" && player && (
-          <span className={styles.status}>Playing as {player.name}</span>
+        {status === "saving" && (
+          <span className={styles.status}>Saving...</span>
         )}
+
+        {status === "saved" && player && (
+          <span className={styles.status}>
+            Playing as <strong>{player.name}</strong>
+          </span>
+        )}
+
         {status === "error" && (
-          <span className={styles.error}>Could not save name</span>
+          <span className={styles.error}>
+            Could not load player.
+          </span>
         )}
       </div>
     </section>

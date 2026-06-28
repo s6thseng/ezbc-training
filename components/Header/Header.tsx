@@ -26,11 +26,19 @@ function formatWeekRange(startsOn: string) {
 export function Header({ week }: HeaderProps) {
   return (
     <header className={styles.header}>
-      <div>
-        <h1 className={styles.title}>🏸 EZBC Training</h1>
-        <p className={styles.subtitle}>
-          Training schedule and availability for EZBC badminton.
-        </p>
+      <div className={styles.brand}>
+        <img
+          src="/ezbc-logo.jpg"
+          alt="EZBC logo"
+          className={styles.logo}
+        />
+
+        <div>
+          <h1 className={styles.title}>EZBC Training</h1>
+          <p className={styles.subtitle}>
+            Training schedule and availability.
+          </p>
+        </div>
       </div>
 
       <div className={styles.weekBadge}>{formatWeekRange(week.starts_on)}</div>

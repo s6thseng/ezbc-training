@@ -1,6 +1,5 @@
 import { Header } from "@/components/Header/Header";
-import { PlayerSelector } from "@/components/PlayerSelector/PlayerSelector";
-import { ScheduleTable } from "@/components/ScheduleTable/ScheduleTable";
+import { ScheduleClient } from "@/components/Schedule/ScheduleClient";
 import { getAvailabilityForSessions } from "@/lib/queries/availability";
 import { getSessionsForWeek } from "@/lib/queries/sessions";
 import { getCurrentWeek } from "@/lib/queries/weeks";
@@ -27,8 +26,10 @@ export default async function HomePage() {
     <main>
       <section className="card wide">
         <Header week={week} />
-        <PlayerSelector />
-        <ScheduleTable sessions={sessions} availability={availability} />
+        <ScheduleClient
+          sessions={sessions}
+          initialAvailability={availability}
+        />
       </section>
     </main>
   );
