@@ -124,33 +124,66 @@
 @media (max-width: 700px) {
   .table th,
   .table td {
-    min-width: 86px;
-    padding: 12px 8px;
+    min-width: 74px;
+    padding: 8px 4px;
   }
 
   .nameCol {
-    min-width: 110px;
-    max-width: 110px;
-    padding-left: 10px !important;
+    min-width: 86px;
+    max-width: 86px;
+    padding-left: 8px !important;
   }
 
-  .date {
-    font-size: 13px;
+  .dayHeader {
+    font-size: 14px;
   }
 
   .time {
-    font-size: 12px;
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 1.05;
+    white-space: nowrap;
   }
 
-  .location,
-  .description {
-    font-size: 11px;
+  .location {
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.05;
+    white-space: nowrap;
   }
+
+.description {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  line-height: 1.05;
+  color: var(--muted);
+}
 
   .checkCell {
     font-size: 18px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .checkbox {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+  }
+
+  .available,
+  .unavailable {
+    width: 28px;
+    height: 24px;
+    font-size: 16px;
+  }
+
+  .daySeparator {
+    border-right-width: 4px !important;
   }
 }
+
 
 
 .daySeparator {
