@@ -17,8 +17,8 @@
 
 .table th,
 .table td {
-  min-width: 150px;
-  padding: 16px;
+  min-width: 95px;
+  padding: 10px 8px;
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
   text-align: center;
@@ -33,7 +33,7 @@
   position: sticky;
   left: 0;
   z-index: 2;
-  min-width: 180px;
+  min-width: 120px;
   text-align: left !important;
   background: #e3efff !important;
   font-weight: 700;

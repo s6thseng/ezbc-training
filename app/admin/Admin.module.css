@@ -1,0 +1,95 @@
+.panel {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #f8fbff;
+}
+
+.inlineForm {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.inlineForm select,
+.inlineForm input,
+.sessionCard select,
+.sessionCard input,
+.addRow select,
+.addRow input {
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  background: white;
+}
+
+.inlineForm button,
+.sessionCard button,
+.addRow button {
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: #dbeafe;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.hint {
+  color: var(--muted);
+}
+
+.week {
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+}
+
+.weekRange {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sessionCards {
+  display: grid;
+  gap: 12px;
+}
+
+.sessionCard {
+  display: grid;
+  grid-template-columns: 220px 90px 90px 90px 1fr 1fr auto auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.sessionSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sessionSummary span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.addRow {
+  display: grid;
+  grid-template-columns: 90px 90px 90px 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+@media (max-width: 1000px) {
+  .sessionCard,
+  .addRow {
+    grid-template-columns: 1fr;
+  }
+}

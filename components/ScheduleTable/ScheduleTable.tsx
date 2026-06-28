@@ -18,8 +18,10 @@ function formatDate(date: string) {
   });
 }
 
-function formatTime(time: string) {
-  return time.slice(0, 5);
+function formatTime(startTime: string, endTime: string | null) {
+  const start = startTime.slice(0, 5);
+  const end = endTime ? endTime.slice(0, 5) : "";
+  return end ? `${start}–${end}` : start;
 }
 
 export function ScheduleTable({
@@ -62,7 +64,7 @@ export function ScheduleTable({
             {sessions.map((session) => (
               <th key={session.id}>
                 <div className={styles.date}>{formatDate(session.date)}</div>
-                <div className={styles.time}>{formatTime(session.time)}</div>
+                <div className={styles.time}>{formatTime(session.time, session.end_time )}</div>
 
                 {session.location && (
                   <div className={styles.location}>📍 {session.location}</div>

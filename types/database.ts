@@ -10,6 +10,7 @@ export type Session = {
   week_id: string;
   date: string;
   time: string;
+  end_time: string | null;
   location: string | null;
   description: string | null;
 };
