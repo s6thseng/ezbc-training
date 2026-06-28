@@ -15,13 +15,22 @@
   background: white;
 }
 
+.dayHeader {
+  background: #e6eefb !important;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.sessionHeader {
+  background: #f8fbff !important;
+}
+
 .table th,
 .table td {
-  min-width: 95px;
-  padding: 10px 8px;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  text-align: center;
+  min-width: 86px;
+  padding: 10px 6px;
 }
 
 .table th {
@@ -64,6 +73,7 @@
 .checkCell {
   font-size: 22px;
   font-weight: 800;
+  text-align: center;
 }
 
 .checkbox {
@@ -75,6 +85,7 @@
 
 .totalCell {
   font-weight: 900;
+  text-align: center;
 }
 .available {
   display: inline-flex;
@@ -139,4 +150,9 @@
   .checkCell {
     font-size: 18px;
   }
+}
+
+
+.daySeparator {
+  border-right: 6px solid #eef4fb !important;
 }

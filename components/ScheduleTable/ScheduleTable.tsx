@@ -10,7 +10,7 @@ type ScheduleTableProps = {
   onToggleSession: (sessionId: string, checked: boolean) => void;
 };
 
-function formatDate(date: string) {
+function formatDay(date: string) {
   return new Date(date + "T12:00:00").toLocaleDateString("en-GB", {
     weekday: "short",
     day: "2-digit",
@@ -24,6 +24,29 @@ function formatTime(startTime: string, endTime: string | null) {
   return end ? `${start}–${end}` : start;
 }
 
+function groupSessionsByDate(sessions: Session[]) {
+  const groups: { date: string; sessions: Session[] }[] = [];
+
+  for (const session of sessions) {
+    const last = groups[groups.length - 1];
+
+    if (last && last.date === session.date) {
+      last.sessions.push(session);
+    } else {
+      groups.push({ date: session.date, sessions: [session] });
+    }
+  }
+
+  return groups;
+}
+
+function isLastSessionOfDay(sessions: Session[], index: number) {
+  return (
+    index === sessions.length - 1 ||
+    sessions[index + 1].date !== sessions[index].date
+  );
+}
+
 export function ScheduleTable({
   sessions,
   availability,
@@ -34,49 +57,70 @@ export function ScheduleTable({
     return <p className={styles.empty}>No sessions planned for this week.</p>;
   }
 
-  const currentEntry =
-    currentPlayer
-      ? availability.find((entry) => entry.player.id === currentPlayer.id) ?? {
-          player: currentPlayer,
-          sessionIds: [],
-        }
-      : null;
+  const currentEntry = currentPlayer
+    ? availability.find((entry) => entry.player.id === currentPlayer.id) ?? {
+        player: currentPlayer,
+        sessionIds: [],
+      }
+    : null;
 
   const otherRows = availability.filter(
     (entry) => !currentPlayer || entry.player.id !== currentPlayer.id
   );
 
-  const visibleRows = currentEntry
-    ? [currentEntry, ...otherRows]
-    : otherRows;
+  const visibleRows = currentEntry ? [currentEntry, ...otherRows] : otherRows;
 
   const totals = sessions.map((session) =>
     visibleRows.filter((entry) => entry.sessionIds.includes(session.id)).length
   );
+
+  const dayGroups = groupSessionsByDate(sessions);
 
   return (
     <div className={styles.tableWrap}>
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.nameCol} aria-label="Players"></th>
+            <th className={styles.nameCol} rowSpan={2} aria-label="Players" />
 
-            {sessions.map((session) => (
-              <th key={session.id}>
-                <div className={styles.date}>{formatDate(session.date)}</div>
-                <div className={styles.time}>{formatTime(session.time, session.end_time )}</div>
-
-                {session.location && (
-                  <div className={styles.location}>📍 {session.location}</div>
-                )}
-
-                {session.description && (
-                  <div className={styles.description}>
-                    {session.description}
-                  </div>
-                )}
+            {dayGroups.map((group) => (
+              <th
+                key={group.date}
+                colSpan={group.sessions.length}
+                className={styles.dayHeader}
+              >
+                {formatDay(group.date)}
               </th>
             ))}
+          </tr>
+
+          <tr>
+            {sessions.map((session, index) => {
+              const isLastOfDay = isLastSessionOfDay(sessions, index);
+
+              return (
+                <th
+                  key={session.id}
+                  className={`${styles.sessionHeader} ${
+                    isLastOfDay ? styles.daySeparator : ""
+                  }`}
+                >
+                  <div className={styles.time}>
+                    {formatTime(session.time, session.end_time)}
+                  </div>
+
+                  {session.location && (
+                    <div className={styles.location}>📍 {session.location}</div>
+                  )}
+
+                  {session.description && (
+                    <div className={styles.description}>
+                      {session.description}
+                    </div>
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
 
@@ -92,11 +136,17 @@ export function ScheduleTable({
               >
                 <td className={styles.nameCol}>{entry.player.name}</td>
 
-                {sessions.map((session) => {
+                {sessions.map((session, index) => {
                   const checked = entry.sessionIds.includes(session.id);
+                  const isLastOfDay = isLastSessionOfDay(sessions, index);
 
                   return (
-                    <td key={session.id} className={styles.checkCell}>
+                    <td
+                      key={session.id}
+                      className={`${styles.checkCell} ${
+                        isLastOfDay ? styles.daySeparator : ""
+                      }`}
+                    >
                       {isCurrentPlayer ? (
                         <input
                           className={styles.checkbox}
@@ -125,11 +175,20 @@ export function ScheduleTable({
           <tr className={styles.totalRow}>
             <td className={styles.nameCol}>Total</td>
 
-            {totals.map((total, index) => (
-              <td key={sessions[index].id} className={styles.totalCell}>
-                {total}
-              </td>
-            ))}
+            {totals.map((total, index) => {
+              const isLastOfDay = isLastSessionOfDay(sessions, index);
+
+              return (
+                <td
+                  key={sessions[index].id}
+                  className={`${styles.totalCell} ${
+                    isLastOfDay ? styles.daySeparator : ""
+                  }`}
+                >
+                  {total}
+                </td>
+              );
+            })}
           </tr>
         </tbody>
       </table>
