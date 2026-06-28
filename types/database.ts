@@ -13,6 +13,7 @@ export type Session = {
   end_time: string | null;
   location: string | null;
   description: string | null;
+  is_cancelled: boolean;
 };
 
 export type Player = {
@@ -31,4 +32,13 @@ export type Availability = {
 export type PlayerAvailability = {
   player: Player;
   sessionIds: string[];
+};
+export type TrainingTemplate = {
+  id: string;
+  day_offset: number;
+  time: string;
+  end_time: string;
+  location: string | null;
+  description: string | null;
+  is_active: boolean;
 };

@@ -69,7 +69,10 @@
   font-size: 12px;
   color: var(--muted);
 }
-
+.cancelledSession {
+  opacity: 0.35;
+  background: #f3f4f6 !important;
+}
 .checkCell {
   font-size: 22px;
   font-weight: 800;
@@ -188,4 +191,22 @@
 
 .daySeparator {
   border-right: 6px solid #eef4fb !important;
+}
+.cancelledSession {
+  background: #f1f5f9 !important;
+  color: #94a3b8;
+  opacity: 0.65;
+}
+
+.cancelledBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #64748b;
+  font-size: 18px;
+  font-weight: 900;
 }

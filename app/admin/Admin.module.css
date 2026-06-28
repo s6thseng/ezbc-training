@@ -1,5 +1,5 @@
 .panel {
-  margin-top: 28px;
+  margin-top: 24px;
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -15,23 +15,21 @@
 
 .inlineForm select,
 .inlineForm input,
-.sessionCard select,
-.sessionCard input,
-.addRow select,
-.addRow input {
-  padding: 11px 13px;
+.slotCard input,
+.addSlot input {
+  padding: 10px 12px;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 14px;
+  border-radius: 10px;
   background: white;
+  font-size: 14px;
 }
 
 .inlineForm button,
-.sessionCard button,
-.addRow button {
-  padding: 11px 14px;
+.slotCard button,
+.addSlot button {
+  padding: 10px 13px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #dbeafe;
   font-weight: 800;
   cursor: pointer;
@@ -42,8 +40,8 @@
 }
 
 .week {
-  margin-top: 34px;
-  padding-top: 26px;
+  margin-top: 32px;
+  padding-top: 24px;
   border-top: 1px solid var(--border);
 }
 
@@ -52,44 +50,64 @@
   font-weight: 600;
 }
 
-.sessionCards {
+.weekBoard {
   display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(7, minmax(150px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
 }
 
-.sessionCard {
+.dayColumn {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #f8fbff;
+}
+
+.dayColumn h3 {
+  margin-top: 0;
+}
+
+.slotCard {
   display: grid;
-  grid-template-columns: 220px 90px 90px 90px 1fr 1fr auto auto auto;
   gap: 8px;
-  align-items: center;
+  margin-bottom: 12px;
   padding: 12px;
   border: 1px solid var(--border);
-  border-radius: 16px;
-  background: #ffffff;
+  border-radius: 14px;
+  background: white;
 }
 
-.sessionSummary {
+.slotActions {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.sessionSummary span {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.addRow {
+.addSlot {
   display: grid;
-  grid-template-columns: 90px 90px 90px 1fr 1fr auto;
   gap: 8px;
-  align-items: center;
-  margin-top: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 
-@media (max-width: 1000px) {
-  .sessionCard,
-  .addRow {
+@media (max-width: 1100px) {
+  .weekBoard {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .weekBoard {
     grid-template-columns: 1fr;
   }
+}
+.cancelLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
 }

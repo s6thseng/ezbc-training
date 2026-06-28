@@ -83,27 +83,36 @@ export function ScheduleTable({
           <tr>
             <th className={styles.nameCol} rowSpan={2} aria-label="Players" />
 
-            {dayGroups.map((group) => (
-              <th
-                key={group.date}
-                colSpan={group.sessions.length}
-                className={styles.dayHeader}
-              >
-                {formatDay(group.date)}
-              </th>
-            ))}
+            {dayGroups.map((group) => {
+              const isCancelledDay = group.sessions.every(
+                (session) => session.is_cancelled
+              );
+
+              return (
+                <th
+                  key={group.date}
+                  colSpan={group.sessions.length}
+                  className={`${styles.dayHeader} ${
+                    isCancelledDay ? styles.cancelledSession : ""
+                  }`}
+                >
+                  {formatDay(group.date)}
+                </th>
+              );
+            })}
           </tr>
 
           <tr>
             {sessions.map((session, index) => {
               const isLastOfDay = isLastSessionOfDay(sessions, index);
+              const isCancelled = session.is_cancelled;
 
               return (
                 <th
                   key={session.id}
                   className={`${styles.sessionHeader} ${
-                    isLastOfDay ? styles.daySeparator : ""
-                  }`}
+                    isCancelled ? styles.cancelledSession : ""
+                  } ${isLastOfDay ? styles.daySeparator : ""}`}
                 >
                   <div className={styles.time}>
                     {formatTime(session.time, session.end_time)}
@@ -139,15 +148,16 @@ export function ScheduleTable({
                 {sessions.map((session, index) => {
                   const checked = entry.sessionIds.includes(session.id);
                   const isLastOfDay = isLastSessionOfDay(sessions, index);
+                  const isCancelled = session.is_cancelled;
 
                   return (
                     <td
                       key={session.id}
                       className={`${styles.checkCell} ${
-                        isLastOfDay ? styles.daySeparator : ""
-                      }`}
+                        isCancelled ? styles.cancelledSession : ""
+                      } ${isLastOfDay ? styles.daySeparator : ""}`}
                     >
-                      {isCurrentPlayer ? (
+                      {isCurrentPlayer && !isCancelled ? (
                         <input
                           className={styles.checkbox}
                           type="checkbox"
@@ -159,10 +169,14 @@ export function ScheduleTable({
                       ) : (
                         <span
                           className={
-                            checked ? styles.available : styles.unavailable
+                            isCancelled
+                              ? styles.cancelledBadge
+                              : checked
+                                ? styles.available
+                                : styles.unavailable
                           }
                         >
-                          {checked ? "✓" : "–"}
+                          {isCancelled ? "×" : checked ? "✓" : "–"}
                         </span>
                       )}
                     </td>
@@ -177,15 +191,16 @@ export function ScheduleTable({
 
             {totals.map((total, index) => {
               const isLastOfDay = isLastSessionOfDay(sessions, index);
+              const isCancelled = sessions[index].is_cancelled;
 
               return (
                 <td
                   key={sessions[index].id}
                   className={`${styles.totalCell} ${
-                    isLastOfDay ? styles.daySeparator : ""
-                  }`}
+                    isCancelled ? styles.cancelledSession : ""
+                  } ${isLastOfDay ? styles.daySeparator : ""}`}
                 >
-                  {total}
+                  {isCancelled ? "–" : total}
                 </td>
               );
             })}

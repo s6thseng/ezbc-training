@@ -4,7 +4,7 @@ import type { Session } from "@/types/database";
 export async function getSessionsForWeek(weekId: string): Promise<Session[]> {
   const { data, error } = await supabase
     .from("sessions")
-    .select("id, week_id, date, time, end_time, location, description")
+    .select("id, week_id, date, time, end_time, location, description, is_cancelled")
     .eq("week_id", weekId)
     .order("date", { ascending: true })
     .order("time", { ascending: true });
