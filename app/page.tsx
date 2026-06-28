@@ -1,5 +1,7 @@
 import { Header } from "@/components/Header/Header";
+import { PlayerSelector } from "@/components/PlayerSelector/PlayerSelector";
 import { ScheduleTable } from "@/components/ScheduleTable/ScheduleTable";
+import { getAvailabilityForSessions } from "@/lib/queries/availability";
 import { getSessionsForWeek } from "@/lib/queries/sessions";
 import { getCurrentWeek } from "@/lib/queries/weeks";
 
@@ -10,7 +12,6 @@ export default async function HomePage() {
     return (
       <main>
         <section className="card">
-          <Header />
           <p className="status error">No current week found ❌</p>
         </section>
       </main>
@@ -18,12 +19,16 @@ export default async function HomePage() {
   }
 
   const sessions = await getSessionsForWeek(week.id);
+  const availability = await getAvailabilityForSessions(
+    sessions.map((session) => session.id)
+  );
 
   return (
     <main>
       <section className="card wide">
-        <Header weekLabel={week.label} />
-        <ScheduleTable sessions={sessions} />
+        <Header week={week} />
+        <PlayerSelector />
+        <ScheduleTable sessions={sessions} availability={availability} />
       </section>
     </main>
   );

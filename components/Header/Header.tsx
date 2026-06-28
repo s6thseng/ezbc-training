@@ -1,10 +1,29 @@
+import type { Week } from "@/types/database";
 import styles from "./Header.module.css";
 
 type HeaderProps = {
-  weekLabel?: string;
+  week: Week;
 };
 
-export function Header({ weekLabel }: HeaderProps) {
+function formatWeekRange(startsOn: string) {
+  const start = new Date(startsOn + "T12:00:00");
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+
+  const startLabel = start.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+
+  const endLabel = end.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+
+  return `${startLabel} – ${endLabel}`;
+}
+
+export function Header({ week }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div>
@@ -14,7 +33,7 @@ export function Header({ weekLabel }: HeaderProps) {
         </p>
       </div>
 
-      {weekLabel && <div className={styles.weekBadge}>{weekLabel}</div>}
+      <div className={styles.weekBadge}>{formatWeekRange(week.starts_on)}</div>
     </header>
   );
 }
