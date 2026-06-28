@@ -1,0 +1,62 @@
+.empty {
+  margin-top: 24px;
+  color: var(--muted);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.table th,
+.table td {
+  min-width: 150px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+
+.table th {
+  background: #f8fafc;
+  vertical-align: top;
+}
+
+.nameCol {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 180px;
+  text-align: left !important;
+  background: var(--blue-soft) !important;
+  font-weight: 800;
+}
+
+.date {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.time {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.location {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.description {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}

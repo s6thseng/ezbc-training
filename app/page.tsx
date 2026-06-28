@@ -1,25 +1,29 @@
-import { supabase } from "@/lib/supabase";
+import { Header } from "@/components/Header/Header";
+import { ScheduleTable } from "@/components/ScheduleTable/ScheduleTable";
+import { getSessionsForWeek } from "@/lib/queries/sessions";
+import { getCurrentWeek } from "@/lib/queries/weeks";
 
 export default async function HomePage() {
-  const { data, error } = await supabase.from("weeks").select("id").limit(1);
+  const week = await getCurrentWeek();
 
-  const isConnected = !error && data !== null;
+  if (!week) {
+    return (
+      <main>
+        <section className="card">
+          <Header />
+          <p className="status error">No current week found ❌</p>
+        </section>
+      </main>
+    );
+  }
+
+  const sessions = await getSessionsForWeek(week.id);
 
   return (
     <main>
-      <section className="card">
-        <h1>🏸 EZBC Training</h1>
-        <p>Training schedule and availability for EZBC badminton.</p>
-
-        {isConnected ? (
-          <p className="status success">Connected to Supabase ✅</p>
-        ) : (
-          <p className="status error">
-            Connection failed ❌
-            <br />
-            {error?.message}
-          </p>
-        )}
+      <section className="card wide">
+        <Header weekLabel={week.label} />
+        <ScheduleTable sessions={sessions} />
       </section>
     </main>
   );

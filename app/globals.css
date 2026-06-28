@@ -3,7 +3,7 @@
   --card: #ffffff;
   --text: #172033;
   --muted: #6b7280;
-  --blue: #2563eb;
+  --blue-soft: #dbeafe;
   --green: #16a34a;
   --red: #dc2626;
   --border: #e5e7eb;
@@ -35,15 +35,8 @@ main {
   box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
 }
 
-h1 {
-  margin: 0 0 8px;
-  font-size: 42px;
-  letter-spacing: -0.04em;
-}
-
-p {
-  color: var(--muted);
-  line-height: 1.5;
+.card.wide {
+  max-width: 1100px;
 }
 
 .status {
