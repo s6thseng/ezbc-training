@@ -127,8 +127,8 @@ export function ScheduleClient({ sessions, initialAvailability }: Props) {
 
     await setAvailability(currentPlayer.id, sessionId, checked);
 
-    const freshAvailability = await loadAvailability(sessionIds);
-    setAvailabilityState(freshAvailability);
+    // const freshAvailability = await loadAvailability(sessionIds);
+    // setAvailabilityState(freshAvailability);
   }
 
   return (
