@@ -32,23 +32,21 @@ export function ScheduleTable({
     return <p className={styles.empty}>No sessions planned for this week.</p>;
   }
 
-  const rows = [...availability];
+  const currentEntry =
+    currentPlayer
+      ? availability.find((entry) => entry.player.id === currentPlayer.id) ?? {
+          player: currentPlayer,
+          sessionIds: [],
+        }
+      : null;
 
-  if (
-    currentPlayer &&
-    !rows.some((entry) => entry.player.id === currentPlayer.id)
-  ) {
-    rows.unshift({
-      player: currentPlayer,
-      sessionIds: [],
-    });
-  }
-
-  const visibleRows = rows.filter(
-    (entry) =>
-      entry.sessionIds.length > 0 ||
-      (currentPlayer && entry.player.id === currentPlayer.id)
+  const otherRows = availability.filter(
+    (entry) => !currentPlayer || entry.player.id !== currentPlayer.id
   );
+
+  const visibleRows = currentEntry
+    ? [currentEntry, ...otherRows]
+    : otherRows;
 
   const totals = sessions.map((session) =>
     visibleRows.filter((entry) => entry.sessionIds.includes(session.id)).length
@@ -59,14 +57,17 @@ export function ScheduleTable({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.nameCol}></th>
+            <th className={styles.nameCol} aria-label="Players"></th>
+
             {sessions.map((session) => (
               <th key={session.id}>
                 <div className={styles.date}>{formatDate(session.date)}</div>
                 <div className={styles.time}>{formatTime(session.time)}</div>
+
                 {session.location && (
                   <div className={styles.location}>📍 {session.location}</div>
                 )}
+
                 {session.description && (
                   <div className={styles.description}>
                     {session.description}
@@ -80,13 +81,13 @@ export function ScheduleTable({
         <tbody>
           {visibleRows.map((entry) => {
             const isCurrentPlayer =
-              currentPlayer && entry.player.id === currentPlayer.id;
+              currentPlayer !== null && entry.player.id === currentPlayer.id;
 
             return (
               <tr
-                  key={entry.player.id}
-                  className={isCurrentPlayer ? styles.currentPlayerRow : ""}
-                >
+                key={entry.player.id}
+                className={isCurrentPlayer ? styles.currentPlayerRow : ""}
+              >
                 <td className={styles.nameCol}>{entry.player.name}</td>
 
                 {sessions.map((session) => {
@@ -95,23 +96,23 @@ export function ScheduleTable({
                   return (
                     <td key={session.id} className={styles.checkCell}>
                       {isCurrentPlayer ? (
-                      <input
-                        className={styles.checkbox}
-                        type="checkbox"
-                        checked={checked}
-                        onChange={(event) =>
-                          onToggleSession(session.id, event.target.checked)
-                        }
-                      />
-                    ) : (
-                      <span
-                        className={
-                          checked ? styles.available : styles.unavailable
-                        }
-                      >
-                        {checked ? "✓" : "–"}
-                      </span>
-                    )}
+                        <input
+                          className={styles.checkbox}
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(event) =>
+                            onToggleSession(session.id, event.target.checked)
+                          }
+                        />
+                      ) : (
+                        <span
+                          className={
+                            checked ? styles.available : styles.unavailable
+                          }
+                        >
+                          {checked ? "✓" : "–"}
+                        </span>
+                      )}
                     </td>
                   );
                 })}
@@ -119,8 +120,9 @@ export function ScheduleTable({
             );
           })}
 
-      <tr className={styles.totalRow}>
-        <td className={styles.nameCol}>Total</td>
+          <tr className={styles.totalRow}>
+            <td className={styles.nameCol}>Total</td>
+
             {totals.map((total, index) => (
               <td key={sessions[index].id} className={styles.totalCell}>
                 {total}

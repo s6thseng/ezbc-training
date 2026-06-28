@@ -67,9 +67,10 @@
 }
 
 .checkbox {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
+  accent-color: #2563eb;
 }
 
 .totalCell {
@@ -108,4 +109,34 @@
 .totalRow td {
   background: #fafafa;
   font-weight: 700;
+}
+@media (max-width: 700px) {
+  .table th,
+  .table td {
+    min-width: 86px;
+    padding: 12px 8px;
+  }
+
+  .nameCol {
+    min-width: 110px;
+    max-width: 110px;
+    padding-left: 10px !important;
+  }
+
+  .date {
+    font-size: 13px;
+  }
+
+  .time {
+    font-size: 12px;
+  }
+
+  .location,
+  .description {
+    font-size: 11px;
+  }
+
+  .checkCell {
+    font-size: 18px;
+  }
 }

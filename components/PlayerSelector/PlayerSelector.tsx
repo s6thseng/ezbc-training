@@ -12,17 +12,17 @@ type PlayerSelectorProps = {
 export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
   const [name, setName] = useState("");
   const [player, setPlayer] = useState<Player | null>(null);
-  const [status, setStatus] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
+    "idle"
+  );
 
   const firstRender = useRef(true);
 
   useEffect(() => {
     const savedName = localStorage.getItem("ezbc-player-name");
-
     if (savedName) {
       setName(savedName);
+      void loadPlayer(savedName);
     }
   }, []);
 
@@ -34,7 +34,7 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
 
     const cleaned = name.trim();
 
-    if (!cleaned) {
+    if (cleaned.length < 2) {
       setPlayer(null);
       onPlayerChange?.(null);
       setStatus("idle");
@@ -43,7 +43,7 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
 
     const timeout = setTimeout(() => {
       void loadPlayer(cleaned);
-    }, 400);
+    }, 600);
 
     return () => clearTimeout(timeout);
   }, [name]);
@@ -52,6 +52,9 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
     const cleanedName = inputName.trim();
 
     if (!cleanedName) {
+      setPlayer(null);
+      onPlayerChange?.(null);
+      setStatus("idle");
       return;
     }
 
@@ -62,13 +65,11 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
 
       setPlayer(loadedPlayer);
       localStorage.setItem("ezbc-player-name", loadedPlayer.name);
-
       onPlayerChange?.(loadedPlayer);
 
       setStatus("saved");
     } catch (error) {
       console.error(error);
-
       setStatus("error");
       setPlayer(null);
       onPlayerChange?.(null);
@@ -98,11 +99,11 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
           }}
           onKeyDown={handleKeyDown}
           placeholder="Enter your name"
+          autoComplete="name"
         />
 
-        {status === "saving" && (
-          <span className={styles.status}>Saving...</span>
-        )}
+
+        {status === "saving" && <span className={styles.status}>Saving...</span>}
 
         {status === "saved" && player && (
           <span className={styles.status}>
@@ -111,9 +112,7 @@ export function PlayerSelector({ onPlayerChange }: PlayerSelectorProps) {
         )}
 
         {status === "error" && (
-          <span className={styles.error}>
-            Could not load player.
-          </span>
+          <span className={styles.error}>Could not load player.</span>
         )}
       </div>
     </section>
