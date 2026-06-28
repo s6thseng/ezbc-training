@@ -8,10 +8,9 @@ import {
 } from "./actions";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import styles from "./Admin.module.css";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-type AdminPageProps = {
-  searchParams: Promise<{ key?: string }>;
-};
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -54,19 +53,15 @@ function timeRange(start: string | null, end: string | null) {
   return e ? `${s}–${e}` : s;
 }
 
-export default async function AdminPage({ searchParams }: AdminPageProps) {
-  const { key } = await searchParams;
+export default async function AdminPage() {
+  const cookieStore = await cookies();
+  const adminCookie = cookieStore.get("ezbc-admin")?.value;
 
-  if (key !== process.env.ADMIN_SECRET) {
-    return (
-      <main>
-        <section className="card">
-          <h1>Admin</h1>
-          <p className="status error">Unauthorized</p>
-        </section>
-      </main>
-    );
+  if (adminCookie !== process.env.ADMIN_SECRET) {
+    redirect("/admin/login");
   }
+
+  const key = process.env.ADMIN_SECRET!;
 
   const { data: weeks } = await supabaseAdmin
     .from("weeks")
